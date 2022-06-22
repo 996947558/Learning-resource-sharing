@@ -42,13 +42,17 @@ export default {
   getAllPassage() {
     var _this=this;
     axios.get('/passage/queryAllPassage?pageNo='+_this.current+'&pageSize=10').then(
-      function(res) {
+      res => {
         //console.log(res);
         _this.articles=res.data.passageItem;
         _this.articlesCount=res.data.passageItemCount;
+      },
+      error => {
+        alert('网络繁忙，请稍后再试')
+        console.log(error);
       }
       )
-      .catch();
+
   },
   queryPassageByCommentCount() {
     axios.post('/admin/queryPassageByCommentCount').then(
@@ -56,7 +60,6 @@ export default {
         //console.log(res);
       }
       )
-      .catch();
   },
   deletePassage(res) {
     axios.post('/admin/deletePassage?passageID='+res).then(

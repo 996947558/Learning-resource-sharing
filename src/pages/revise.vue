@@ -5,7 +5,7 @@
     <mu-col span="8"><div class="grid-cell">
       文章标题：<mu-text-field v-model="title"></mu-text-field><br/>
       文章内容：<mu-text-field v-model="content" multi-line :rows="4" full-width></mu-text-field><br/>
-      <div class="img show" v-show="img !== ''">已存在图片<i class="fa fa-times" style="color:red;font-size: 26px;cursor:pointer;margin-left:10px;" @click="deleteImg()"></i></div>
+      <div class="img show" v-show="img !== ''"><img :src='imgUcl' alt="" height="100px"><i class="fa fa-times" style="color:red;font-size: 26px;cursor:pointer;margin-left:10px;" @click="deleteImg()"></i></div>
       <div v-show="img == ''">上传图片：<input type="file" ref="img"></div><br/><br/>
       <div>上传资源：<input type="file" ref="resources"><br/></div>
       <div class="resources" v-show="address !== ''">已存在资源：
@@ -39,6 +39,7 @@
             <mu-pagination raised :total="commentCount" :current.sync="currenttwo" style="justify-content: center;"></mu-pagination>
             <mu-text-field v-model="value" placeholder="请在这里留言" multi-line :rows="3" :rows-max="6" :max-length="100" full-width @keydown.enter="getUserComment()"></mu-text-field><br/>
           </div>
+
     </div></mu-col>
   </mu-row>
 </mu-container>
@@ -60,13 +61,14 @@ export default {
         address:'',
         img:'',
         resourcesID:'',
+        imgUcl:'11',
     }
   },
   methods: {
     getArticleDetails() {
     var _this=this
     axios.get('/passage/passageResources?passageID='+this.getid).then(
-      function(res) {
+      res => {
         //console.log(res.data);
         _this.title = res.data[0].title;
         _this.content = res.data[0].content;
@@ -86,13 +88,15 @@ export default {
           //console.log(i); // 获取键
           _this.img = i.substr(6);
           //console.log(_this.img);
-          //console.log(res.data[2][i]); // 获取值
+          _this.imgUcl = 'data:image/png;base64,'+res.data[2][i]; // 获取值
         }
         }
-
+      },
+      error => {
+        alert('网络繁忙，请稍后再试')
+        console.log(error);
       }
       )
-      .catch();
     },
     queryCommentByPassageID() {
     var _this=this
@@ -100,7 +104,7 @@ export default {
       function(res) {
         _this.comment=res.data.slice(0,-1);
         let length = res.data.length;
-        _this.commentCount=res.data[length-1].substr(3,1)*10;
+        _this.commentCount=res.data[length-1].substring(3)*10;
       }
       )
       .catch();
@@ -117,12 +121,15 @@ export default {
     deleteComment(res) {
       //console.log(res);
     axios.post('/admin/deleteComment?commentID='+res).then(
-        function() {
-          location.reload()
+        res => {
           alert('删除成功')
+          location.reload()
+        },
+        error => {
+        alert('网络繁忙，请稍后再试')
+        console.log(error);
         }
         )
-        .catch();
     },
     toArticleSystem() {
         this.$router.push('/system/articleSystem')
@@ -131,12 +138,10 @@ export default {
     var _this=this
     var id = _this.getid;
     axios.post('/admin/updatePassage?content='+this.content+'&passageID='+id+'&title='+this.title).then(
-        function(res) {
+        res => {
             //console.log(res);
-
         }
         )
-        .catch();
     let resources = this.$refs.resources.files[0];
     if (resources!==undefined) {
         let formDataOne = new FormData();
@@ -147,7 +152,7 @@ export default {
          'Content-Type':'multipart/form-data',
           }
         }).then(res=>{
-            //console.log(res);
+            console.log(res);
         })
     };
     let img = this.$refs.img.files[0];
@@ -160,7 +165,7 @@ export default {
          'Content-Type':'multipart/form-data',
           }
         }).then(res=>{
-            //console.log(res);
+            console.log(res);
         })
     };
     _this.$router.push('/system/articleSystem');

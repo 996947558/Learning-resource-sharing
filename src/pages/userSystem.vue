@@ -39,9 +39,10 @@ export default {
       var _this=this;
       axios.post('/admin/queryAllUser?pageNo='+_this.current+'&pageSize=10').then(
             function(res) {
-              //console.log(res.data[1].substr(3,1));
+              console.log(res);
+              console.log(res.data[1].substring(3));
               _this.user=res.data[0];
-              _this.userCount=Number(res.data[1].substr(3,1)*10);
+              _this.userCount=Number(res.data[1].substring(3)*10);
             }
             )
             .catch();

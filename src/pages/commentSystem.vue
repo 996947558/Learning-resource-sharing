@@ -36,7 +36,7 @@ export default {
         function(res) {
             //console.log(res.data[0]);
             _this.comment=res.data[0];
-            _this.commentCount=Number(res.data[2].substr(4,1)*10);
+            _this.commentCount=Number(res.data[2].substring(4)*10);
             //console.log(_this.comment);
         }
         )

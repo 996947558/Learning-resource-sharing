@@ -33,6 +33,7 @@ export default {
         _this.id = res.data.substr(44);
         //console.log(_this.id);
         let resources = _this.$refs.resources.files[0];
+        //console.log(resources);
         if (resources!==undefined) {
             let formDataOne = new FormData();
             formDataOne.append('file', _this.$refs.resources.files[0]);
@@ -42,7 +43,7 @@ export default {
             'Content-Type':'multipart/form-data',
               }
             }).then(res=>{
-                //console.log(res);
+                console.log(res);
             })
         };
         let img = _this.$refs.img.files[0];
@@ -55,7 +56,7 @@ export default {
             'Content-Type':'multipart/form-data',
               }
             }).then(res=>{
-                //console.log(res);
+                console.log(res);
             })
         };
         }

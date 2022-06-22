@@ -9,6 +9,7 @@
           <div class="time">{{time}}</div>
           <mu-divider></mu-divider>
           <div class="content">
+            <img :src='imgUcl' alt="" height="200px">
             {{content}}
           </div>
           <mu-divider></mu-divider>
@@ -69,13 +70,14 @@ export default {
       value:'',
       userId:'',
       address:'',
+      imgUcl:'',
     }
   },
   methods:{
     getArticleDetails() {
     var _this=this
     axios.get('/passage/passageResources?passageID='+this.getid).then(
-      function(res) {
+      res => {
         //console.log(res.data);
         _this.title = res.data[0].title;
         _this.time = res.data[0].time;
@@ -84,10 +86,23 @@ export default {
         if(res.data[1][0] !== undefined) {
         _this.address = res.data[1];
         }
+        if(res.data[2] !== undefined) {
 
+        //console.log(res.data[2]);
+        let i='';
+        for (i in res.data[2]) {
+          //console.log(i); // 获取键
+          // _this.img = i.substr(6);
+          //console.log(_this.img);
+          _this.imgUcl = 'data:image/png;base64,'+res.data[2][i]; // 获取值
+        }
+        }
+      },
+      error => {
+        alert('网络繁忙，请稍后再试')
+        console.log(error);
       }
       )
-      .catch();
     },
     queryCommentByPassageID() {
     var _this=this
